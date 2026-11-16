@@ -2,7 +2,7 @@ import { PlayViewer } from '../../engine/PlayViewer';
 import type { Play } from '../../engine/types';
 import { sourceById } from '../../content/sources';
 import { CATEGORY_LABEL } from '../../content/plays';
-import { POSITION_NAME } from '../../content/formations';
+import { guideForRole } from '../../content/positions';
 import { href } from '../../lib/router';
 
 export function PlayPage({ play }: { play: Play }) {
@@ -34,7 +34,15 @@ export function PlayPage({ play }: { play: Play }) {
 
       <section className="meta">
         <h2>Most useful for</h2>
-        <p>{play.featuredRoles.map((r) => POSITION_NAME[r]).join(' · ')}</p>
+        <ul className="chips">
+          {[...new Set(play.featuredRoles.map((r) => guideForRole(r)).filter((g) => g !== undefined))].map((g) => (
+            <li key={g.id}>
+              <a className="chip" href={href('positions', g.id)}>
+                {g.name}
+              </a>
+            </li>
+          ))}
+        </ul>
         <h2>Sources</h2>
         <ul>
           {play.sources.map((id) => {

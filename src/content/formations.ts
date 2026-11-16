@@ -16,6 +16,36 @@ export const F433_NEUTRAL: Record<PositionId, Vec> = {
   RW: { x: 52, y: 47 },
 };
 
+/** Typical 4-3-3 shape when we have the ball in their half (ball central). */
+export const F433_ATTACK: Record<PositionId, Vec> = {
+  GK: { x: 12, y: 27.5 },
+  LB: { x: 48, y: 7 },
+  LCB: { x: 36, y: 20 },
+  RCB: { x: 36, y: 35 },
+  RB: { x: 48, y: 48 },
+  LM: { x: 60, y: 15 },
+  CM: { x: 54, y: 27.5 },
+  RM: { x: 60, y: 40 },
+  LW: { x: 76, y: 5 },
+  CF: { x: 79, y: 27.5 },
+  RW: { x: 76, y: 50 },
+};
+
+/** Typical compact 4-3-3 shape when they have the ball around halfway. */
+export const F433_DEFEND: Record<PositionId, Vec> = {
+  GK: { x: 3, y: 27.5 },
+  LB: { x: 23, y: 15 },
+  LCB: { x: 19, y: 23.5 },
+  RCB: { x: 19, y: 31.5 },
+  RB: { x: 23, y: 40 },
+  LM: { x: 35, y: 17 },
+  CM: { x: 32, y: 27.5 },
+  RM: { x: 35, y: 38 },
+  LW: { x: 47, y: 17 },
+  CF: { x: 49, y: 27.5 },
+  RW: { x: 47, y: 38 },
+};
+
 /** Labels shown on tokens (AU/NZ style short codes). */
 export const POSITION_LABEL: Record<PositionId, string> = {
   GK: 'GK',

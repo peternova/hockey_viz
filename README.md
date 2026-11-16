@@ -26,6 +26,8 @@ npm run build             # type-check + production build into dist/
 - `src/engine/`: the animation engine (keyframes → smooth movement, playback, viewer)
 - `src/pitch/`: the SVG pitch, drawn to FIH dimensions in metres
 - `src/content/plays/`: one file per animated play (keyframes, step captions, sources)
+- `src/content/positions/`: the position guides (defence, midfield, forwards, goalkeeper)
+- `src/features/`: the pages (home, positions, plays)
 
 ### Adding a play
 

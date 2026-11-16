@@ -1,8 +1,8 @@
 import { PLAYS } from '../../content/plays';
 import { href } from '../../lib/router';
+import { PositionGrid } from '../positions/PositionGrid';
 
 const COMING = [
-  { name: 'Positions', what: 'What each position does in defence, midfield and attack, on the left, centre and right' },
   { name: 'Glossary', what: 'Every term, in Australian/NZ wording, with US/UK alternatives' },
   { name: 'Pitch explorer', what: 'Tap any line or area of the pitch to learn its name and rules' },
   { name: '“Where should I be?” quiz', what: 'Drag your player to the right spot in a frozen game moment' },
@@ -20,7 +20,10 @@ export function Home() {
         </p>
       </header>
 
-      <h2>Start here</h2>
+      <h2>Pick your position</h2>
+      <PositionGrid />
+
+      <h2>Watch a play</h2>
       <ul className="card-grid">
         {PLAYS.map((p) => (
           <li key={p.id}>

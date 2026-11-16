@@ -1,4 +1,7 @@
 import { playById } from './content/plays';
+import { guideById } from './content/positions';
+import { PositionPage } from './features/positions/PositionPage';
+import { PositionsIndex } from './features/positions/PositionsIndex';
 import { Home } from './features/home/Home';
 import { PlayPage } from './features/plays/PlayPage';
 import { PlaysList } from './features/plays/PlaysList';
@@ -18,6 +21,11 @@ function NotFound() {
 function Route({ parts }: { parts: string[] }) {
   const [section, id] = parts;
   if (!section) return <Home />;
+  if (section === 'positions' && !id) return <PositionsIndex />;
+  if (section === 'positions' && id) {
+    const guide = guideById(id);
+    return guide ? <PositionPage key={guide.id} guide={guide} /> : <NotFound />;
+  }
   if (section === 'plays' && !id) return <PlaysList />;
   if (section === 'plays' && id) {
     const play = playById(id);
@@ -41,6 +49,9 @@ export function App() {
         <nav className="nav">
           <a href={href()} aria-current={section === '' ? 'page' : undefined}>
             Home
+          </a>
+          <a href={href('positions')} aria-current={section === 'positions' ? 'page' : undefined}>
+            Positions
           </a>
           <a href={href('plays')} aria-current={section === 'plays' ? 'page' : undefined}>
             Plays
