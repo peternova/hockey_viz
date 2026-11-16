@@ -25,9 +25,12 @@ npm run build             # type-check + production build into dist/
 - `docs/content-outline.md`: everything planned (positions, plays, glossary, quiz)
 - `src/engine/`: the animation engine (keyframes → smooth movement, playback, viewer)
 - `src/pitch/`: the SVG pitch, drawn to FIH dimensions in metres
-- `src/content/plays/`: one file per animated play (keyframes, step captions, sources)
+- `src/content/plays/`: one file per animated play (keyframes, step captions, sources); `helpers.ts` has shared shapes (the circle, 5 m rings)
 - `src/content/positions/`: the position guides (defence, midfield, forwards, goalkeeper)
-- `src/features/`: the pages (home, positions, plays)
+- `src/content/formations.ts`: the 4-3-3 shapes plus the formations comparison (4-3-3, 3-3-3-1, 2-3-5) and old names
+- `src/content/pitch.ts`: Pitch Explorer markings and areas, with FIH rule references
+- `src/content/glossary.ts`: the glossary (AU/NZ term first, aliases, links to plays/positions/pitch)
+- `src/features/`: the pages (home, positions, plays, formations, pitch explorer, glossary)
 
 ### Adding a play
 
@@ -36,4 +39,8 @@ Copy a file in `src/content/plays/`, then:
 - Write the step captions.
 - Register the play in `src/content/plays/index.ts`.
 
-`npm test` checks that every play is complete, stays on the pitch, and cites a source.
+`npm test` checks that every play is complete, stays on the pitch, and cites a source,
+and that every glossary, pitch and formation link points at something that exists.
+
+Keep players at least ~4 m apart when they aren't tackling or receiving: the tokens
+are drawn 3.6 m wide so they stay readable on a phone.

@@ -42,7 +42,7 @@ export const a1Overlap: Play = {
         RM: { x: 56, y: 42.5 },
         RB: { x: 52, y: 50 },
         RW: { x: 78, y: 40 },
-        't-LB': { x: 80, y: 41 },
+        't-LB': { x: 81, y: 42.5 },
         't-LM': { x: 61, y: 43.5 },
       },
     },

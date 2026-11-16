@@ -1,10 +1,13 @@
 import { playById } from './content/plays';
 import { guideById } from './content/positions';
-import { PositionPage } from './features/positions/PositionPage';
-import { PositionsIndex } from './features/positions/PositionsIndex';
+import { FormationsPage } from './features/formations/FormationsPage';
+import { GlossaryPage } from './features/glossary/GlossaryPage';
 import { Home } from './features/home/Home';
+import { PitchExplorer } from './features/pitch/PitchExplorer';
 import { PlayPage } from './features/plays/PlayPage';
 import { PlaysList } from './features/plays/PlaysList';
+import { PositionPage } from './features/positions/PositionPage';
+import { PositionsIndex } from './features/positions/PositionsIndex';
 import { href, useHashPath } from './lib/router';
 
 function NotFound() {
@@ -31,12 +34,24 @@ function Route({ parts }: { parts: string[] }) {
     const play = playById(id);
     return play ? <PlayPage key={play.id} play={play} /> : <NotFound />;
   }
+  if (section === 'formations') return <FormationsPage />;
+  if (section === 'pitch') return <PitchExplorer key={id ?? ''} initial={id} />;
+  if (section === 'glossary') return <GlossaryPage focus={id} />;
   return <NotFound />;
 }
 
+const NAV = [
+  { section: '', label: 'Home' },
+  { section: 'positions', label: 'Positions' },
+  { section: 'plays', label: 'Plays' },
+  { section: 'formations', label: 'Formations' },
+  { section: 'pitch', label: 'Pitch' },
+  { section: 'glossary', label: 'Glossary' },
+];
+
 export function App() {
   const parts = useHashPath();
-  const section = parts[0] ?? '';
+  const current = parts[0] ?? '';
   return (
     <>
       <header className="topbar">
@@ -46,16 +61,17 @@ export function App() {
           </span>{' '}
           Hockey IQ
         </a>
-        <nav className="nav">
-          <a href={href()} aria-current={section === '' ? 'page' : undefined}>
-            Home
-          </a>
-          <a href={href('positions')} aria-current={section === 'positions' ? 'page' : undefined}>
-            Positions
-          </a>
-          <a href={href('plays')} aria-current={section === 'plays' ? 'page' : undefined}>
-            Plays
-          </a>
+        <nav className="nav" aria-label="Main">
+          {NAV.map((n) => (
+            <a
+              key={n.section}
+              className={n.section === '' ? 'nav__home' : undefined}
+              href={n.section ? href(n.section) : href()}
+              aria-current={current === n.section ? 'page' : undefined}
+            >
+              {n.label}
+            </a>
+          ))}
         </nav>
       </header>
       <main>
