@@ -133,6 +133,13 @@ describe('advance', () => {
     expect(s).toEqual({ t: 2, playing: false, pausedAtStep: 0 });
   });
 
+  it('carries on through a step marked noPause', () => {
+    const noPause = [{ ...steps[0], noPause: true }, ...steps.slice(1)];
+    const s = advance({ t: 1.9, playing: true, pausedAtStep: null }, 0.5, { ...base, steps: noPause, pauseAfterEachStep: true });
+    expect(s.playing).toBe(true);
+    expect(s.t).toBeCloseTo(2.4);
+  });
+
   it('always pauses after a "think" step', () => {
     const s = advance({ t: 3.9, playing: true, pausedAtStep: null }, 0.5, base);
     expect(s).toEqual({ t: 4, playing: false, pausedAtStep: 1 });

@@ -4,6 +4,8 @@ import { sourceById } from '../../content/sources';
 import { CATEGORY_LABEL } from '../../content/plays';
 import { guideForRole } from '../../content/positions';
 import { href } from '../../lib/router';
+import { openNewBoard } from '../board/BoardHome';
+import { fromLibraryPlay } from '../board/model';
 
 export function PlayPage({ play }: { play: Play }) {
   return (
@@ -31,6 +33,19 @@ export function PlayPage({ play }: { play: Play }) {
           <strong>Varies by coach:</strong> {play.variesByCoach}
         </aside>
       ) : null}
+
+      <p className="board__from-play">
+        <button
+          type="button"
+          className="btn btn--small"
+          onClick={() => {
+            if (!openNewBoard(fromLibraryPlay(play))) window.alert('This browser wouldn’t save the copy.');
+          }}
+        >
+          Copy to my tactics board
+        </button>{' '}
+        <span className="muted small">and change it to how your team plays it.</span>
+      </p>
 
       <section className="meta">
         <h2>Most useful for</h2>

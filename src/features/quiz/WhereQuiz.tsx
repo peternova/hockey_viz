@@ -19,8 +19,8 @@ import {
   project,
   unproject,
   type LengthView,
-  type Orientation,
 } from '../../pitch/coords';
+import { clientToPitch } from '../../pitch/pointer';
 import { href } from '../../lib/router';
 import { useProgress, type Progress, type WhereResult } from '../../lib/progress';
 import { useAutoOrientation } from '../../lib/useMedia';
@@ -50,14 +50,6 @@ function firstUnsolved(progress: Progress): WhereQuestion {
 
 function statusIcon(r: WhereResult | undefined): string {
   return r === 'spot' ? '✓' : r === 'close' ? '≈' : r === 'miss' ? '•' : '';
-}
-
-/** Browser pointer position → pitch metres. */
-function toPitch(svg: SVGSVGElement, clientX: number, clientY: number, o: Orientation): Vec | null {
-  const m = svg.getScreenCTM();
-  if (!m) return null;
-  const s = new DOMPoint(clientX, clientY).matrixTransform(m.inverse());
-  return unproject({ x: s.x, y: s.y }, o);
 }
 
 function clampToView(p: Vec, v: LengthView): Vec {
@@ -194,7 +186,7 @@ function Situation({
           }
           onPointerMove={(e) => {
             if (!dragging.current || !svgRef.current) return;
-            place(toPitch(svgRef.current, e.clientX, e.clientY, orientation));
+            place(clientToPitch(svgRef.current, e.clientX, e.clientY, orientation));
           }}
           onPointerUp={() => {
             if (dragging.current) justDragged.current = true;
@@ -205,7 +197,7 @@ function Situation({
               justDragged.current = false;
               return;
             }
-            if (svgRef.current) place(toPitch(svgRef.current, e.clientX, e.clientY, orientation));
+            if (svgRef.current) place(clientToPitch(svgRef.current, e.clientX, e.clientY, orientation));
           }}
         >
           {others.map((p) => (

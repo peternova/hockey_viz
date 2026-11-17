@@ -31,8 +31,9 @@ npm run build             # type-check + production build into dist/
 - `src/content/pitch.ts`: Pitch Explorer markings and areas, with FIH rule references
 - `src/content/glossary.ts`: the glossary (AU/NZ term first, aliases, links to plays/positions/pitch)
 - `src/content/quiz.ts`: the "Where should I be?" situations and the rules true/false questions
-- `src/features/`: the pages (home, positions, plays, formations, pitch explorer, glossary, quiz)
-- `src/lib/progress.ts`: quiz progress, saved in the browser on this device only
+- `src/features/`: the pages (home, positions, plays, formations, pitch explorer, glossary, quiz, tactics board)
+- `src/features/board/model.ts`: the tactics board's data, edits, templates and export/import format (no React, fully tested)
+- `src/lib/progress.ts`, `src/lib/boardStore.ts`: quiz progress and board plays, saved in the browser on this device only
 
 ### Adding a play
 
@@ -56,3 +57,20 @@ players who play no part (e.g. our goalkeeper during a full press at their end).
 
 Keep players at least ~4 m apart when they aren't tackling or receiving: the tokens
 are drawn 3.6 m wide so they stay readable on a phone.
+
+## Tactics board
+
+`#/board` lets you draw your own plays. A board play is a list of frames: frame 0 is
+where everyone starts, and each later frame is where everyone is at the end of a step.
+For playback it's turned into an ordinary play (`toPlay` in `src/features/board/model.ts`),
+so the same viewer, controls and "follow" work. Arrows (run, dribble, pass) and step times
+are worked out from how far people and the ball move, unless you set a time.
+
+Moving someone in an earlier step also moves them in later steps where they hadn't moved
+yet, so editing the start doesn't make anyone jump back later.
+
+Plays are saved in the browser (`localStorage`) on that device only. **Export** saves a
+`.json` file (`{"kind": "hockey-iq-tactics-board", "version": 1, "plays": [...]}`) and
+**Import** reads one back. Importing never overwrites: a play that's already there
+unchanged is skipped, and a changed one is added alongside. Anything odd in a file
+(missing positions, unknown players, long text) is repaired or dropped when it's read.

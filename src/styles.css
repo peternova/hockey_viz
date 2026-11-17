@@ -966,7 +966,7 @@ main {
   border-color: var(--accent);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 899px) {
   /* Two rows on small screens: brand, then a scrollable nav. Not sticky, to save height. */
   .topbar {
     position: static;
@@ -994,19 +994,21 @@ main {
   }
 }
 
-/* Phones: six sections don't fit on one line, so show them as a 3 × 2 grid
-   of big, easy targets instead of a cut-off row. */
+/* Phones: the sections don't fit on one line, so they wrap onto two rows of
+   big, easy targets (each row stretched to the full width) instead of a
+   cut-off row. */
 @media (max-width: 560px) {
   .nav {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 2px 4px;
     overflow: visible;
   }
   .nav a {
+    flex: 1 1 auto;
     justify-content: center;
     text-align: center;
-    padding: 6px 4px;
+    padding: 6px 8px;
     min-height: 40px;
     font-size: 0.95rem;
   }
@@ -1687,4 +1689,382 @@ button.chip.chip--on {
 .round__feedback p,
 .round__done p {
   margin: 0 0 10px;
+}
+
+/* ---------- Tactics board (M5) ---------- */
+
+.card--button {
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.field {
+  display: grid;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.field input,
+.field textarea,
+.field select,
+.board__title input,
+.board__pick select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 400;
+}
+
+.field textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.field--inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field--inline select {
+  width: auto;
+}
+
+.btn--file {
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn--file:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.btn--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn:disabled:hover {
+  border-color: var(--border);
+}
+
+.board__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.board__copy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px;
+  margin-top: 16px;
+  max-width: 720px;
+}
+
+.board__copy .field {
+  flex: 1 1 280px;
+}
+
+.board__help {
+  max-width: 62ch;
+}
+
+.board__msg {
+  margin: 12px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 62ch;
+}
+
+.board__msg--ok {
+  background: var(--good-bg);
+}
+
+.board__msg--bad {
+  background: var(--bad-bg);
+  color: var(--bad);
+  font-weight: 600;
+}
+
+.board__danger {
+  color: var(--bad);
+}
+
+.board__from-play {
+  margin: 16px 0 0;
+}
+
+.board__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin: 16px 0 12px;
+}
+
+.board__title {
+  flex: 1 1 260px;
+}
+
+.board__title input {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.board__mode {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.board__how {
+  margin: 0 0 12px;
+}
+
+.board__how summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.board__how ol {
+  margin: 8px 0 0;
+  padding-left: 1.3em;
+}
+
+.board__how li + li {
+  margin-top: 4px;
+}
+
+.board__edit {
+  display: grid;
+  gap: 12px;
+}
+
+.board__strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.board__frames {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 2px;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.board__frame {
+  min-width: 44px;
+  min-height: 40px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.board__frame--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.board__frame--add {
+  border-style: dashed;
+}
+
+.board__undo {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
+.board__undo .btn {
+  min-width: 44px;
+  font-size: 1.15rem;
+}
+
+.board__stage:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* A drawing surface: no scrolling, text selection or long-press menus while
+   dragging. (Scroll the page by touching outside the pitch.) */
+.board__stage .pitch {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  cursor: pointer;
+}
+
+.board__stage.viewer__stage--portrait {
+  --reserve: 230px;
+}
+
+.board__ball-halo {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 0.3;
+  animation: halo 1.4s ease-in-out infinite;
+}
+
+.token-ghost .token--them .token__body {
+  fill: rgba(79, 131, 241, 0.35);
+}
+
+.board__bar {
+  display: grid;
+  gap: 6px;
+}
+
+.board__hint {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.board__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.board__actions .btn--small {
+  padding: 4px 9px;
+}
+
+.board__pick {
+  flex: 1 1 150px;
+  max-width: 240px;
+}
+
+.board__pick select {
+  min-height: 36px;
+  padding: 4px 8px;
+  font-size: 0.92rem;
+}
+
+.board__panel {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.board__panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.board__panel-head h2 {
+  margin: 0;
+}
+
+.board__nav {
+  display: flex;
+  gap: 4px;
+}
+
+.board__players summary {
+  cursor: pointer;
+  font-weight: 700;
+  padding: 10px 0;
+}
+
+.board__players .chips {
+  margin-bottom: 8px;
+}
+
+.board__sub {
+  margin: 8px 0 6px;
+  font-size: 0.95rem;
+}
+
+.board__footer {
+  margin-top: 24px;
+}
+
+/* Laptop: pitch on the left; step, chosen player and step details on the right. */
+@media (min-width: 980px) {
+  .board__edit {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-areas:
+      'strip bar'
+      'stage panel'
+      'stage players';
+    grid-template-rows: auto auto 1fr;
+    align-items: start;
+  }
+  .board__strip {
+    grid-area: strip;
+  }
+  .board__edit > .board__stage {
+    grid-area: stage;
+  }
+  .board__bar {
+    grid-area: bar;
+  }
+  .board__panel {
+    grid-area: panel;
+  }
+  .board__players {
+    grid-area: players;
+  }
+}
+
+/* Phones and tablets: the hint and player buttons stick to the bottom of the
+   screen while the pitch is on screen, like the play controls. */
+@media (max-width: 979px) {
+  .board__bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px));
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board__ball-halo {
+    animation: none;
+  }
 }

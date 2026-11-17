@@ -11,7 +11,11 @@ import type { Play } from './types';
 
 const SPEEDS = [0.25, 0.5, 0.75, 1];
 
-export function PlayViewer({ play }: { play: Play }) {
+/**
+ * `firstIsStart`: the first step is just the starting picture (tactics board
+ * plays), so it's called "Start" and the steps after it are numbered from 1.
+ */
+export function PlayViewer({ play, firstIsStart = false }: { play: Play; firstIsStart?: boolean }) {
   const kfs = useMemo(() => resolveKeyframes(play.players, play.keyframes), [play]);
   const dur = useMemo(() => playDuration(play), [play]);
   const reducedMotion = usePrefersReducedMotion();
@@ -51,6 +55,12 @@ export function PlayViewer({ play }: { play: Play }) {
   const thinkStep = pb.pausedAtStep !== null ? play.steps[pb.pausedAtStep] : null;
   const followTrail = follow ? trail(play.players, kfs, follow, pb.t) : [];
   const atEnd = pb.t >= dur - 1e-6;
+  const stepName = (i: number) =>
+    firstIsStart
+      ? i === 0
+        ? 'Start'
+        : `Step ${i} of ${play.steps.length - 1}`
+      : `Step ${i + 1} of ${play.steps.length}`;
 
   // Keyboard: space = play/pause, ← → = steps.
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -73,7 +83,7 @@ export function PlayViewer({ play }: { play: Play }) {
         <Pitch
           orientation={orientation}
           view={view}
-          ariaLabel={`${play.title}. Step ${stepIdx + 1}: ${step?.title ?? ''}`}
+          ariaLabel={`${play.title}. ${stepName(stepIdx)}: ${step?.title ?? ''}`}
           underlay={
             <>
               <ArrowDefs />
@@ -109,9 +119,7 @@ export function PlayViewer({ play }: { play: Play }) {
       </div>
 
       <div className="caption" aria-live="polite">
-        <div className="caption__meta">
-          Step {stepIdx + 1} of {play.steps.length}
-        </div>
+        <div className="caption__meta">{stepName(stepIdx)}</div>
         <h3 className="caption__title">{step?.title}</h3>
         <p className="caption__text">{step?.caption}</p>
         {thinkStep?.think && !pb.playing ? (
@@ -237,7 +245,7 @@ export function PlayViewer({ play }: { play: Play }) {
                 revealPitch();
               }}
             >
-              <span className="steps__num">{i + 1}</span>
+              <span className="steps__num">{firstIsStart ? (i === 0 ? '•' : i) : i + 1}</span>
               <span>{s.title}</span>
             </button>
           </li>

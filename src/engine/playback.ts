@@ -28,7 +28,7 @@ export function advance(state: PlaybackState, dt: number, opts: AdvanceOptions):
   for (let i = 0; i < opts.steps.length; i++) {
     const s = opts.steps[i];
     const isLast = i === opts.steps.length - 1;
-    const shouldPause = opts.pauseAfterEachStep || Boolean(s.think);
+    const shouldPause = (opts.pauseAfterEachStep && !s.noPause) || Boolean(s.think);
     if (!isLast && shouldPause && state.t < s.t1 && next >= s.t1) {
       return { t: s.t1, playing: false, pausedAtStep: i };
     }

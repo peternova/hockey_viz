@@ -60,6 +60,11 @@ export interface Step {
   caption: string;
   /** "Freeze and think": a question shown when this step ends. */
   think?: string;
+  /**
+   * Carry straight on at the end of this step even when pausing after each
+   * step (a board play's starting picture, which has nothing moving in it).
+   */
+  noPause?: boolean;
 }
 
 export type ArrowKind = 'run' | 'pass' | 'dribble';

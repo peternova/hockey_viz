@@ -7,6 +7,11 @@ const START_HERE = ['s1-team-shape', 's2-shifting', 'd1-channelling', 'a1-overla
 
 const EXPLORE = [
   {
+    to: href('board'),
+    title: 'Tactics board',
+    text: 'Draw your own plays step by step, or copy one from the library and change it to how your team plays it.',
+  },
+  {
     to: href('formations'),
     title: 'Formations',
     text: '4-3-3, the sweeper system and the old 2-3-5 side by side, and where names like “left half” come from.',
@@ -23,7 +28,7 @@ const EXPLORE = [
   },
 ];
 
-const COMING = [{ name: 'Tactics board', what: 'Draw and animate your own plays' }];
+const COMING = [{ name: 'Install on your phone', what: 'Use it at the pitch, even with no signal' }];
 
 export function Home() {
   const startPlays = START_HERE.map((id) => playById(id)).filter((p) => p !== undefined);

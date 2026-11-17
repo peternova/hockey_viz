@@ -65,9 +65,14 @@ function carrierBallPos(players: PlayerDef[], carrierId: string, at: Vec): Vec {
   return { x: at.x + BALL_OFFSET * dir, y: at.y + 0.35 * dir };
 }
 
+/** Where the ball is drawn for these positions and ball state. */
+export function ballPoint(players: PlayerDef[], pos: Record<string, Vec>, ball: BallState): Vec {
+  if ('at' in ball) return ball.at;
+  return carrierBallPos(players, ball.with, pos[ball.with]);
+}
+
 function ballPosAt(players: PlayerDef[], kf: ResolvedKeyframe): Vec {
-  if ('at' in kf.ball) return kf.ball.at;
-  return carrierBallPos(players, kf.ball.with, kf.pos[kf.ball.with]);
+  return ballPoint(players, kf.pos, kf.ball);
 }
 
 /** Index of the last keyframe at or before time t. */

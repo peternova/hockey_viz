@@ -1,5 +1,7 @@
 import { playById } from './content/plays';
 import { guideById } from './content/positions';
+import { BoardEditorPage } from './features/board/BoardEditor';
+import { BoardHome } from './features/board/BoardHome';
 import { FormationsPage } from './features/formations/FormationsPage';
 import { GlossaryPage } from './features/glossary/GlossaryPage';
 import { Home } from './features/home/Home';
@@ -63,6 +65,7 @@ function Route({ parts }: { parts: string[] }) {
         />
       );
   }
+  if (section === 'board') return id ? <BoardEditorPage key={id} id={id} /> : <BoardHome />;
   return <NotFound />;
 }
 
@@ -74,6 +77,7 @@ const NAV = [
   { section: 'pitch', label: 'Pitch' },
   { section: 'glossary', label: 'Glossary' },
   { section: 'quiz', label: 'Quiz' },
+  { section: 'board', label: 'Board' },
 ];
 
 export function App() {
