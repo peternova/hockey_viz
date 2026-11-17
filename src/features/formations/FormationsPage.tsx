@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ALL_POSITIONS, FORMATIONS, OLD_NAMES, POSITION_NAME, type Formation } from '../../content/formations';
 import { guideForRole } from '../../content/positions';
 import { PlayerToken } from '../../engine/PlayerToken';
-import { Pitch } from '../../pitch/Pitch';
+import { AttackDirection, Pitch } from '../../pitch/Pitch';
 import { project } from '../../pitch/coords';
 import { href } from '../../lib/router';
 import { useAutoOrientation, usePrefersReducedMotion } from '../../lib/useMedia';
@@ -69,9 +69,7 @@ export function FormationsPage() {
               </g>
             ))}
           </Pitch>
-          <div className="viewer__direction" aria-hidden="true">
-            {orientation === 'landscape' ? 'Our attack →' : 'Our attack ↑'}
-          </div>
+          <AttackDirection />
         </div>
 
         <p className="posmap__note" aria-live="polite">

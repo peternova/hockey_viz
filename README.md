@@ -30,7 +30,9 @@ npm run build             # type-check + production build into dist/
 - `src/content/formations.ts`: the 4-3-3 shapes plus the formations comparison (4-3-3, 3-3-3-1, 2-3-5) and old names
 - `src/content/pitch.ts`: Pitch Explorer markings and areas, with FIH rule references
 - `src/content/glossary.ts`: the glossary (AU/NZ term first, aliases, links to plays/positions/pitch)
-- `src/features/`: the pages (home, positions, plays, formations, pitch explorer, glossary)
+- `src/content/quiz.ts`: the "Where should I be?" situations and the rules true/false questions
+- `src/features/`: the pages (home, positions, plays, formations, pitch explorer, glossary, quiz)
+- `src/lib/progress.ts`: quiz progress, saved in the browser on this device only
 
 ### Adding a play
 
@@ -41,6 +43,16 @@ Copy a file in `src/content/plays/`, then:
 
 `npm test` checks that every play is complete, stays on the pitch, and cites a source,
 and that every glossary, pitch and formation link points at something that exists.
+
+### Adding a "Where should I be?" situation
+
+Add an entry to `WHERE_QUESTIONS` in `src/content/quiz.ts`: everyone's position (yours is
+where your token starts), the ball, the best area (`zone`) and the best spot (`ideal`), and
+the explanation. `npm test` checks that the best spot is inside the area, that you don't
+start within "close" range of it, and that nobody overlaps.
+
+On a phone, plays and situations zoom in on the part of the pitch they use, so leave out
+players who play no part (e.g. our goalkeeper during a full press at their end).
 
 Keep players at least ~4 m apart when they aren't tackling or receiving: the tokens
 are drawn 3.6 m wide so they stay readable on a phone.

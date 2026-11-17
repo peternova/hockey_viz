@@ -1,28 +1,13 @@
 import { useState } from 'react';
-import { LAYERS, PITCH_FEATURES, pitchFeatureById, type PitchFeature, type PitchLayer } from '../../content/pitch';
+import { LAYERS, PITCH_FEATURES, pitchFeatureById, type PitchLayer } from '../../content/pitch';
 import { termById } from '../../content/glossary';
 import { playById } from '../../content/plays';
-import { Pitch } from '../../pitch/Pitch';
+import { AttackDirection, Pitch } from '../../pitch/Pitch';
+import { FeatureShape } from './FeatureShape';
 import { href } from '../../lib/router';
 import { useAutoOrientation } from '../../lib/useMedia';
 
 const DEFAULT_ID = 'circle';
-
-function FeatureShape({ f, on, onSelect }: { f: PitchFeature; on: boolean; onSelect: () => void }) {
-  const cls = `pf pf--${f.draw}${on ? ' pf--on' : ''}`;
-  return (
-    <g className={cls} onClick={onSelect} aria-hidden="true">
-      {f.paths.map((d, i) => (
-        <g key={i}>
-          {/* What you see */}
-          <path className="pf__shape" d={d} fillRule={f.evenOdd ? 'evenodd' : undefined} />
-          {/* A larger, invisible target so thin lines and small marks are easy to tap */}
-          {f.draw !== 'fill' ? <path className="pf__hit" d={d} /> : null}
-        </g>
-      ))}
-    </g>
-  );
-}
 
 export function PitchExplorer({ initial }: { initial?: string }) {
   const orientation = useAutoOrientation();
@@ -90,9 +75,7 @@ export function PitchExplorer({ initial }: { initial?: string }) {
                 </g>
               }
             />
-            <div className="viewer__direction" aria-hidden="true">
-              {orientation === 'landscape' ? 'Our attack →' : 'Our attack ↑'}
-            </div>
+            <AttackDirection />
           </div>
           <ul className="chips explorer__list" aria-label={layerLabel}>
             {features.map((f) => (

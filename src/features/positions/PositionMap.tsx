@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Pitch } from '../../pitch/Pitch';
+import { AttackDirection, Pitch } from '../../pitch/Pitch';
 import { project } from '../../pitch/coords';
 import { PlayerToken } from '../../engine/PlayerToken';
 import { easeInOut, lerpVec } from '../../engine/interpolate';
@@ -103,9 +103,7 @@ export function PositionMap({ guide }: { guide: PositionGuide }) {
           ))}
           <circle className="ball" cx={ball.x} cy={ball.y} r={0.6} />
         </Pitch>
-        <div className="viewer__direction" aria-hidden="true">
-          {orientation === 'landscape' ? 'Our attack →' : 'Our attack ↑'}
-        </div>
+        <AttackDirection />
       </div>
       <p className="posmap__note" aria-live="polite">
         <strong>{phase === 'attack' ? 'We have the ball:' : 'They have the ball:'}</strong>{' '}

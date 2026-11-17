@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { CENTRE_Y, PITCH, groupTransform, viewBox, type Orientation } from './coords';
+import { CENTRE_Y, PITCH, groupTransform, viewBox, type LengthView, type Orientation } from './coords';
 
 const { length: L, width: W } = PITCH;
 
@@ -88,34 +88,44 @@ function Stripes() {
 
 export interface PitchProps {
   orientation: Orientation;
+  /** Show only part of the pitch's length (defaults to all of it). */
+  view?: LengthView;
   /** Extra layers drawn in pitch coordinates (zones etc.), under the players. */
   underlay?: ReactNode;
   /** Layers drawn in screen coordinates (players, ball, labels). */
   children?: ReactNode;
   ariaLabel?: string;
   svgRef?: React.Ref<SVGSVGElement>;
+  onPointerDown?: React.PointerEventHandler<SVGSVGElement>;
   onPointerMove?: React.PointerEventHandler<SVGSVGElement>;
   onPointerUp?: React.PointerEventHandler<SVGSVGElement>;
+  onClick?: React.MouseEventHandler<SVGSVGElement>;
 }
 
 export function Pitch({
   orientation,
+  view,
   underlay,
   children,
   ariaLabel,
   svgRef,
+  onPointerDown,
   onPointerMove,
   onPointerUp,
+  onClick,
 }: PitchProps) {
   return (
     <svg
       ref={svgRef}
       className={`pitch pitch--${orientation}`}
-      viewBox={viewBox(orientation)}
+      viewBox={viewBox(orientation, view)}
       role="img"
       aria-label={ariaLabel ?? 'Hockey pitch'}
+      onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+      onClick={onClick}
     >
       <rect x={-50} y={-50} width={300} height={300} fill="var(--pitch-runoff)" />
       <g transform={groupTransform(orientation)}>
@@ -126,5 +136,15 @@ export function Pitch({
       </g>
       {children}
     </svg>
+  );
+}
+
+/** "Our attack" arrow drawn over the pitch's edge (runs up the side in portrait). */
+export function AttackDirection() {
+  return (
+    <div className="viewer__direction" aria-hidden="true">
+      {/* Portrait turns this text on its side with CSS, so the arrow points up. */}
+      Our attack →
+    </div>
   );
 }

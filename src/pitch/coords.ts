@@ -28,10 +28,35 @@ export type Orientation = 'landscape' | 'portrait';
 
 const MARGIN = 3;
 
-export function viewBox(o: Orientation): string {
+/** The stretch of the pitch's length that is shown, in metres along x. */
+export interface LengthView {
+  x0: number;
+  x1: number;
+}
+
+export const FULL_VIEW: LengthView = { x0: 0, x1: PITCH.length };
+
+export function isFullView(v: LengthView): boolean {
+  return v.x0 <= 0 && v.x1 >= PITCH.length;
+}
+
+/**
+ * Visible rectangle in SVG screen coordinates. Real back-lines get a margin
+ * (so the goals show); a cropped edge is cut flush.
+ */
+export function viewRect(o: Orientation, v: LengthView = FULL_VIEW): { x: number; y: number; w: number; h: number } {
+  const before = v.x0 <= 0 ? MARGIN : 0;
+  const after = v.x1 >= PITCH.length ? MARGIN : 0;
+  const x0 = Math.max(0, v.x0) - before;
+  const x1 = Math.min(PITCH.length, v.x1) + after;
   return o === 'landscape'
-    ? `${-MARGIN} ${-MARGIN} ${PITCH.length + 2 * MARGIN} ${PITCH.width + 2 * MARGIN}`
-    : `${-MARGIN} ${-MARGIN} ${PITCH.width + 2 * MARGIN} ${PITCH.length + 2 * MARGIN}`;
+    ? { x: x0, y: -MARGIN, w: x1 - x0, h: PITCH.width + 2 * MARGIN }
+    : { x: -MARGIN, y: PITCH.length - x1, w: PITCH.width + 2 * MARGIN, h: x1 - x0 };
+}
+
+export function viewBox(o: Orientation, v: LengthView = FULL_VIEW): string {
+  const r = viewRect(o, v);
+  return `${r.x} ${r.y} ${r.w} ${r.h}`;
 }
 
 /** Pitch coordinates → SVG screen coordinates. */

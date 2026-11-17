@@ -8,6 +8,10 @@ import { PlayPage } from './features/plays/PlayPage';
 import { PlaysList } from './features/plays/PlaysList';
 import { PositionPage } from './features/positions/PositionPage';
 import { PositionsIndex } from './features/positions/PositionsIndex';
+import { ChoiceRound } from './features/quiz/ChoiceRound';
+import { QuizHome } from './features/quiz/QuizHome';
+import { WhereQuiz } from './features/quiz/WhereQuiz';
+import { rulesRound, termsRound } from './features/quiz/questions';
 import { href, useHashPath } from './lib/router';
 
 function NotFound() {
@@ -37,6 +41,28 @@ function Route({ parts }: { parts: string[] }) {
   if (section === 'formations') return <FormationsPage />;
   if (section === 'pitch') return <PitchExplorer key={id ?? ''} initial={id} />;
   if (section === 'glossary') return <GlossaryPage focus={id} />;
+  if (section === 'quiz') {
+    if (!id) return <QuizHome />;
+    if (id === 'where') return <WhereQuiz id={parts[2]} />;
+    if (id === 'terms')
+      return (
+        <ChoiceRound
+          key="terms"
+          title="Name it"
+          lede="Pick the right name for each pitch marking or hockey word."
+          makeRound={(p) => termsRound(p)}
+        />
+      );
+    if (id === 'rules')
+      return (
+        <ChoiceRound
+          key="rules"
+          title="Rules: true or false?"
+          lede="Statements about the FIH Rules of Hockey 2027. True or false?"
+          makeRound={(p) => rulesRound(p)}
+        />
+      );
+  }
   return <NotFound />;
 }
 
@@ -47,6 +73,7 @@ const NAV = [
   { section: 'formations', label: 'Formations' },
   { section: 'pitch', label: 'Pitch' },
   { section: 'glossary', label: 'Glossary' },
+  { section: 'quiz', label: 'Quiz' },
 ];
 
 export function App() {

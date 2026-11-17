@@ -23,10 +23,7 @@ const EXPLORE = [
   },
 ];
 
-const COMING = [
-  { name: '“Where should I be?” quiz', what: 'Drag your player to the right spot in a frozen game moment' },
-  { name: 'Tactics board', what: 'Draw and animate your own plays' },
-];
+const COMING = [{ name: 'Tactics board', what: 'Draw and animate your own plays' }];
 
 export function Home() {
   const startPlays = START_HERE.map((id) => playById(id)).filter((p) => p !== undefined);
@@ -57,6 +54,15 @@ export function Home() {
       <p>
         <a href={href('plays')}>All {PLAYS.length} plays: build-up, attack, defence, transition and set pieces →</a>
       </p>
+
+      <h2>Test yourself</h2>
+      <a className="card card--wide" href={href('quiz', 'where')}>
+        <span className="card__title">Where should I be?</span>
+        <span className="card__text">
+          A moment from a game is frozen. Drag your player to where you’d be, then see the best area and why. Plus
+          quick quizzes on hockey words and the rules.
+        </span>
+      </a>
 
       <h2>Explore</h2>
       <ul className="card-grid">

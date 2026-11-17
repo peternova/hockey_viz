@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Pitch } from '../pitch/Pitch';
-import { project, type Orientation } from '../pitch/coords';
-import { useAutoOrientation, usePrefersReducedMotion } from '../lib/useMedia';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AttackDirection, Pitch } from '../pitch/Pitch';
+import { FULL_VIEW, isFullView, project, type Orientation } from '../pitch/coords';
+import { useAutoOrientation, useMediaQuery, usePrefersReducedMotion } from '../lib/useMedia';
 import { AnnotationLayer, ArrowDefs, ZoneLabels } from './Annotations';
 import { duration as playDuration, frameAt, resolveKeyframes, stepIndexAt, trail } from './interpolate';
 import { PlayerToken } from './PlayerToken';
 import { usePlayback } from './usePlayback';
+import { playView, stageProps } from './view';
 import type { Play } from './types';
 
 const SPEEDS = [0.25, 0.5, 0.75, 1];
@@ -19,6 +20,27 @@ export function PlayViewer({ play }: { play: Play }) {
   const auto = useAutoOrientation();
   const [override, setOverride] = useState<Orientation | null>(null);
   const orientation = override ?? auto;
+
+  // Portrait (phones): zoom in on the part of the pitch the play uses.
+  const fitted = useMemo(() => playView(play), [play]);
+  const [wholePitch, setWholePitch] = useState(false);
+  const canZoom = orientation === 'portrait' && !isFullView(fitted);
+  const view = canZoom && !wholePitch ? fitted : FULL_VIEW;
+  const stage = stageProps(orientation, view);
+
+  // Stacked layout (phones, tablets): bring the pitch fully into view when a
+  // control is pressed, so you never scroll between the pitch and the buttons.
+  const stacked = useMediaQuery('(max-width: 979px)');
+  const stageRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<HTMLDivElement>(null);
+  const revealPitch = () => {
+    const el = stageRef.current;
+    if (!stacked || !el) return;
+    const r = el.getBoundingClientRect();
+    const covered = controlsRef.current?.offsetHeight ?? 0;
+    if (r.top >= 0 && r.bottom <= window.innerHeight - covered) return;
+    window.scrollBy({ top: r.top - 8, behavior: reducedMotion ? 'auto' : 'smooth' });
+  };
 
   const [follow, setFollow] = useState<string>(play.defaultFollow ?? '');
   useEffect(() => setFollow(play.defaultFollow ?? ''), [play]);
@@ -47,9 +69,10 @@ export function PlayViewer({ play }: { play: Play }) {
 
   return (
     <div className="viewer" tabIndex={0} onKeyDown={onKeyDown} aria-label={`Animation: ${play.title}`}>
-      <div className={`viewer__stage viewer__stage--${orientation}`}>
+      <div ref={stageRef} className={stage.className} style={stage.style}>
         <Pitch
           orientation={orientation}
+          view={view}
           ariaLabel={`${play.title}. Step ${stepIdx + 1}: ${step?.title ?? ''}`}
           underlay={
             <>
@@ -82,9 +105,7 @@ export function PlayViewer({ play }: { play: Play }) {
             return <circle className="ball" cx={b.x} cy={b.y} r={0.6} />;
           })()}
         </Pitch>
-        <div className="viewer__direction" aria-hidden="true">
-          {orientation === 'landscape' ? 'Our attack →' : 'Our attack ↑'}
-        </div>
+        <AttackDirection />
       </div>
 
       <div className="caption" aria-live="polite">
@@ -100,14 +121,40 @@ export function PlayViewer({ play }: { play: Play }) {
         ) : null}
       </div>
 
-      <div className="controls" role="group" aria-label="Playback controls">
-        <button type="button" className="btn" onClick={pb.prevStep} aria-label="Back a step" title="Back a step (←)">
+      <div ref={controlsRef} className="controls" role="group" aria-label="Playback controls">
+        <button
+          type="button"
+          className="btn"
+          onClick={() => {
+            pb.prevStep();
+            revealPitch();
+          }}
+          aria-label="Back a step"
+          title="Back a step (←)"
+        >
           ◀◀
         </button>
-        <button type="button" className="btn btn--primary" onClick={pb.toggle} title="Play / pause (space)">
+        <button
+          type="button"
+          className="btn btn--primary"
+          onClick={() => {
+            if (!pb.playing) revealPitch();
+            pb.toggle();
+          }}
+          title="Play / pause (space)"
+        >
           {pb.playing ? '❚❚' : '▶'} {playLabel}
         </button>
-        <button type="button" className="btn" onClick={pb.nextStep} aria-label="Skip to end of step" title="Skip to end of step (→)">
+        <button
+          type="button"
+          className="btn"
+          onClick={() => {
+            pb.nextStep();
+            revealPitch();
+          }}
+          aria-label="Skip to end of step"
+          title="Skip to end of step (→)"
+        >
           ▶▶
         </button>
         <input
@@ -171,6 +218,11 @@ export function PlayViewer({ play }: { play: Play }) {
         >
           Rotate pitch
         </button>
+        {canZoom ? (
+          <button type="button" className="btn btn--small" onClick={() => setWholePitch((w) => !w)}>
+            {wholePitch ? 'Zoom in on the play' : 'Show the whole pitch'}
+          </button>
+        ) : null}
       </div>
 
       <ol className="steps">
@@ -182,6 +234,7 @@ export function PlayViewer({ play }: { play: Play }) {
               onClick={() => {
                 pb.seek(s.t0);
                 pb.play();
+                revealPitch();
               }}
             >
               <span className="steps__num">{i + 1}</span>

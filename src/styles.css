@@ -11,6 +11,11 @@
   --draft-bg: #fff1c2;
   --draft-text: #6b4e00;
   --note-bg: #eaf3ee;
+  --good-bg: #e3f4e8;
+  --close-text: #7a5300;
+  --close-bg: #fff3d1;
+  --bad: #b3261e;
+  --bad-bg: #fbe4e2;
 
   /* Pitch (same in both themes so animations look consistent) */
   --pitch-turf: #2f7d4a;
@@ -45,6 +50,11 @@
     --draft-bg: #4a3b0a;
     --draft-text: #ffe08a;
     --note-bg: #1d2b23;
+    --good-bg: #173322;
+    --close-text: #ffd27a;
+    --close-bg: #3a2e0c;
+    --bad: #ff9a90;
+    --bad-bg: #3d1c1a;
     color-scheme: dark;
   }
 }
@@ -62,6 +72,11 @@
   --draft-bg: #4a3b0a;
   --draft-text: #ffe08a;
   --note-bg: #1d2b23;
+  --good-bg: #173322;
+  --close-text: #ffd27a;
+  --close-bg: #3a2e0c;
+  --bad: #ff9a90;
+  --bad-bg: #3d1c1a;
   color-scheme: dark;
 }
 
@@ -273,9 +288,32 @@ main {
 }
 
 .viewer__stage--portrait {
-  max-width: 460px;
-  width: 100%;
+  /* As wide as the screen allows, but short enough that the playback buttons
+     and the start of the caption fit underneath. --aspect is width / height,
+     set by the viewer when it zooms in (0.6263 = the whole pitch). */
+  --reserve: 170px;
+  width: min(100%, 460px, max(220px, calc((100vh - var(--reserve)) * var(--aspect, 0.6263))));
+  width: min(100%, 460px, max(220px, calc((100svh - var(--reserve)) * var(--aspect, 0.6263))));
   margin: 0 auto;
+}
+
+/* Zoomed in: a soft shadow on a cut edge says "the pitch carries on". */
+.viewer__stage--cut-top::before,
+.viewer__stage--cut-bottom::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14px;
+  pointer-events: none;
+}
+.viewer__stage--cut-top::before {
+  top: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), transparent);
+}
+.viewer__stage--cut-bottom::after {
+  bottom: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
 }
 
 .pitch {
@@ -293,6 +331,18 @@ main {
   font-weight: 700;
   color: rgba(255, 255, 255, 0.85);
   pointer-events: none;
+}
+
+/* Portrait: run the label up the left-hand run-off, clear of the players. */
+.viewer__stage--portrait .viewer__direction {
+  top: 50%;
+  right: auto;
+  left: 2px;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%) rotate(180deg);
+  font-size: 0.7rem;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .token__body {
@@ -621,6 +671,45 @@ main {
   }
 }
 
+/* Phones and tablets: pitch, then the buttons, then the caption. The buttons
+   stick to the bottom of the screen while the play is on screen. */
+@media (max-width: 979px) {
+  .viewer > .viewer__stage {
+    order: 1;
+  }
+  .viewer > .controls {
+    order: 2;
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px));
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .viewer > .caption {
+    order: 3;
+  }
+  .viewer > .options {
+    order: 4;
+  }
+  .viewer > .steps {
+    order: 5;
+  }
+  .viewer .controls {
+    gap: 6px;
+  }
+  .viewer .controls .btn {
+    padding: 8px 10px;
+  }
+  .viewer .scrubber {
+    flex: 1 1 72px;
+    order: 0;
+  }
+  .viewer .btn--primary {
+    min-width: 116px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .token__halo {
     animation: none;
@@ -905,10 +994,21 @@ main {
   }
 }
 
-@media (max-width: 420px) {
+/* Phones: six sections don't fit on one line, so show them as a 3 × 2 grid
+   of big, easy targets instead of a cut-off row. */
+@media (max-width: 560px) {
+  .nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px 4px;
+    overflow: visible;
+  }
   .nav a {
-    padding: 6px 5px;
-    font-size: 0.84rem;
+    justify-content: center;
+    text-align: center;
+    padding: 6px 4px;
+    min-height: 40px;
+    font-size: 0.95rem;
   }
 }
 
@@ -1246,4 +1346,345 @@ button.chip.chip--on {
   .nav a {
     padding: 6px 3px;
   }
+}
+
+/* ---------- Quiz (M4) ---------- */
+
+.card--wide {
+  height: auto;
+  margin-bottom: 8px;
+}
+
+.meter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.meter__bar,
+.round__bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.meter__bar > span,
+.round__bar > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.meter__text {
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.linkish {
+  font: inherit;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Where should I be? */
+
+.wq {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.wq__title {
+  margin: 4px 0 6px;
+}
+
+.wq__prompt p {
+  margin: 0 0 6px;
+}
+
+.wq__stage:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.wq__stage--live .pitch {
+  cursor: crosshair;
+}
+
+.wq__grab {
+  fill: transparent;
+  cursor: grab;
+}
+
+.wq__you,
+.wq__grab {
+  touch-action: none;
+}
+
+.token-ghost .token__body {
+  fill: rgba(245, 183, 0, 0.35);
+  stroke: #ffffff;
+  stroke-width: 0.25;
+  stroke-dasharray: 0.6 0.4;
+}
+
+.token-ghost .token__label {
+  fill: #ffffff;
+}
+
+.wq__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.wq__actions .btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.verdict {
+  flex: 1 1 100%;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+.verdict--spot {
+  background: var(--good-bg);
+  color: var(--accent);
+}
+
+.verdict--close {
+  background: var(--close-bg);
+  color: var(--close-text);
+}
+
+.verdict--miss {
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+
+.verdict strong {
+  font-size: 1.05rem;
+}
+
+.wq__feedback,
+.round__feedback,
+.round__done {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.wq__feedback h3 {
+  margin-top: 0;
+}
+
+.wq__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 6px;
+}
+
+.wq__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.wq__item:hover {
+  border-color: var(--accent);
+}
+
+.wq__item--on {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.wq__status {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.wq__status--spot {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.wq__status--close {
+  background: var(--close-bg);
+  color: var(--close-text);
+}
+
+.wq__status--miss {
+  color: var(--text-muted);
+}
+
+@media (min-width: 980px) {
+  .wq {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-areas:
+      'stage prompt'
+      'stage actions'
+      'stage feedback';
+    grid-template-rows: auto auto 1fr;
+    align-items: start;
+  }
+  .wq > .viewer__stage {
+    grid-area: stage;
+  }
+  .wq > .wq__prompt {
+    grid-area: prompt;
+  }
+  .wq > .wq__actions {
+    grid-area: actions;
+  }
+  .wq > .wq__feedback {
+    grid-area: feedback;
+  }
+}
+
+/* Name it / Rules rounds */
+
+.round__q {
+  display: grid;
+  gap: 12px;
+  max-width: 680px;
+}
+
+.round__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.round__bar {
+  flex: none;
+}
+
+.round__picture.viewer__stage--portrait {
+  --reserve: 330px;
+}
+
+.round__picture.viewer__stage--landscape {
+  max-width: 560px;
+}
+
+.round__prompt {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.round__prompt--def {
+  font-weight: 500;
+}
+
+.round__prompt--def .muted {
+  display: block;
+  font-weight: 600;
+}
+
+.round__options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.round__options--tf {
+  grid-template-columns: 1fr 1fr;
+}
+
+.round__opt {
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.round__options--tf .round__opt {
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.round__opt:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.round__opt:disabled {
+  cursor: default;
+  color: var(--text);
+}
+
+.round__opt--right {
+  border-color: var(--accent);
+  background: var(--good-bg);
+}
+
+.round__opt--right::before {
+  content: '✓ ';
+  color: var(--accent);
+}
+
+.round__opt--wrong {
+  border-color: var(--bad);
+  background: var(--bad-bg);
+}
+
+.round__opt--wrong::before {
+  content: '✗ ';
+  color: var(--bad);
+}
+
+.round__opt--off {
+  opacity: 0.6;
+}
+
+.round__feedback p,
+.round__done p {
+  margin: 0 0 10px;
 }
