@@ -9,6 +9,8 @@ import { InstallPage } from './features/install/InstallPage';
 import { PwaStatus } from './features/install/PwaStatus';
 import { PitchExplorer } from './features/pitch/PitchExplorer';
 import { PlayPage } from './features/plays/PlayPage';
+import { TeamPlayPage } from './features/plays/TeamPlayPage';
+import { teamPlayBySlug } from './features/board/teamPlays';
 import { PlaysList } from './features/plays/PlaysList';
 import { PositionPage } from './features/positions/PositionPage';
 import { PositionsIndex } from './features/positions/PositionsIndex';
@@ -38,6 +40,10 @@ function Route({ parts }: { parts: string[] }) {
     return guide ? <PositionPage key={guide.id} guide={guide} /> : <NotFound />;
   }
   if (section === 'plays' && !id) return <PlaysList />;
+  if (section === 'plays' && id === 'team') {
+    const team = parts[2] ? teamPlayBySlug(parts[2]) : undefined;
+    return team ? <TeamPlayPage key={team.slug} team={team} /> : <NotFound />;
+  }
   if (section === 'plays' && id) {
     const play = playById(id);
     return play ? <PlayPage key={play.id} play={play} /> : <NotFound />;

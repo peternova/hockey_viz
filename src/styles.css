@@ -2179,3 +2179,27 @@ button.chip.chip--on {
 .install__steps li + li {
   margin-top: 6px;
 }
+
+/* ---- Team plays ---- */
+
+.note--details summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.note--details ol {
+  margin: 8px 0;
+  padding-left: 1.3em;
+}
+
+.note--details li + li {
+  margin-top: 6px;
+}
+
+ol.board__help {
+  padding-left: 1.3em;
+}
+
+ol.board__help li + li {
+  margin-top: 4px;
+}

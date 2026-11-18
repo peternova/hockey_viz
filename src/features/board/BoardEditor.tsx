@@ -16,6 +16,7 @@ import { href } from '../../lib/router';
 import { useAutoOrientation } from '../../lib/useMedia';
 import { useHistory } from '../../lib/useHistory';
 import { openNewBoard } from './BoardHome';
+import { teamPlayFrom } from './teamPlays';
 import {
   GIVE_RADIUS,
   LIMITS,
@@ -359,6 +360,7 @@ function Editor({ initial }: { initial: BoardPlay }) {
   const onUs = b.players.filter((p) => p.team === 'us').length;
   const onThem = b.players.filter((p) => p.team === 'them').length;
   const source = b.from ? playById(b.from) : undefined;
+  const teamSource = teamPlayFrom(b.from);
   const secsChoices =
     frame.secs !== null && !SECS_CHOICES.includes(frame.secs)
       ? [...SECS_CHOICES, frame.secs].sort((x, y) => x - y)
@@ -774,6 +776,13 @@ function Editor({ initial }: { initial: BoardPlay }) {
         {source ? (
           <p className="muted small">
             Started as a copy of the library play <a href={href('plays', source.id)}>{source.title}</a>.
+          </p>
+        ) : null}
+        {teamSource ? (
+          <p className="muted small">
+            Started as a copy of the team play{' '}
+            <a href={href('plays', 'team', teamSource.slug)}>{teamSource.play.title}</a>. To share your changes with
+            the team, export this play and upload the file to GitHub (the team play’s page explains how).
           </p>
         ) : null}
       </section>

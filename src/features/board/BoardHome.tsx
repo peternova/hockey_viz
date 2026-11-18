@@ -3,6 +3,8 @@ import { PLAYS } from '../../content/plays';
 import { href } from '../../lib/router';
 import { importBoards, putBoard, useBoardList } from '../../lib/boardStore';
 import { downloadText } from '../../lib/download';
+import { TeamPlayCards } from '../plays/TeamPlayCards';
+import { TEAM_FOLDER, TEAM_PLAYS, UPLOAD_URL } from './teamPlays';
 import {
   BoardFileError,
   MAX_FILE_BYTES,
@@ -82,6 +84,16 @@ export function BoardHome() {
         </p>
       </header>
 
+      {TEAM_PLAYS.length ? (
+        <>
+          <h2>Team plays</h2>
+          <p className="board__help">
+            Shared with everyone who uses this app. Open one to watch it, or copy it to your plays to change it.
+          </p>
+          <TeamPlayCards plays={TEAM_PLAYS} />
+        </>
+      ) : null}
+
       <h2>My plays</h2>
       {plays.length ? (
         <ul className="card-grid">
@@ -138,8 +150,8 @@ export function BoardHome() {
 
       <h2>Move plays to another device</h2>
       <p className="board__help">
-        Plays are kept in this browser only. To get them onto your phone, or to share one with your team, export a file,
-        send it to yourself (by email, say), then import it on the other device.
+        Plays are kept in this browser only. To get them onto your phone, export a file, send it to yourself (by email,
+        say), then import it on the other device. To share a play with everyone, see below.
       </p>
       <div className="board__row">
         <button
@@ -160,6 +172,28 @@ export function BoardHome() {
           {msg.text}
         </p>
       ) : null}
+
+      <h2>Share a play with your team</h2>
+      <p className="board__help">
+        Plays in the <code>{TEAM_FOLDER}</code> folder of this app’s GitHub repository appear under{' '}
+        <strong>Team plays</strong> for everyone, on every device, and work with no signal. The repository is public, so
+        anyone can see them.
+      </p>
+      <ol className="board__help">
+        <li>
+          Open your play and press <strong>Export as a file</strong>.
+        </li>
+        <li>
+          <a href={UPLOAD_URL} target="_blank" rel="noreferrer">
+            Upload the file to the {TEAM_FOLDER} folder
+          </a>{' '}
+          on GitHub (sign in first), then press <strong>Commit changes</strong>.
+        </li>
+        <li>
+          About two minutes later it’s in the app. Phones get it the next time they have signal: tap{' '}
+          <strong>Reload</strong> on the “new version” bar.
+        </li>
+      </ol>
     </article>
   );
 }

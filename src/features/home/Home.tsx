@@ -3,6 +3,8 @@ import { GLOSSARY } from '../../content/glossary';
 import { isStandalone } from '../../lib/pwa';
 import { href } from '../../lib/router';
 import { PositionGrid } from '../positions/PositionGrid';
+import { TEAM_PLAYS } from '../board/teamPlays';
+import { TeamPlayCards } from '../plays/TeamPlayCards';
 
 const START_HERE = ['s1-team-shape', 's2-shifting', 'd1-channelling', 'a1-overlap'];
 
@@ -40,6 +42,18 @@ export function Home() {
           step through.
         </p>
       </header>
+
+      {TEAM_PLAYS.length ? (
+        <>
+          <h2>Our team’s plays</h2>
+          <TeamPlayCards plays={TEAM_PLAYS.slice(0, 4)} />
+          {TEAM_PLAYS.length > 4 ? (
+            <p>
+              <a href={href('plays')}>All {TEAM_PLAYS.length} team plays →</a>
+            </p>
+          ) : null}
+        </>
+      ) : null}
 
       <h2>Pick your position</h2>
       <PositionGrid />

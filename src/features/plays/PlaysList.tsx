@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { CATEGORY_LABEL, CATEGORY_ORDER, PLAYS } from '../../content/plays';
 import { GUIDES, guideById, linkedPlays } from '../../content/positions';
 import { href } from '../../lib/router';
+import { TEAM_PLAYS } from '../board/teamPlays';
+import { TeamPlayCards } from './TeamPlayCards';
 
 const STORAGE_KEY = 'hockeyiq.plays.position';
 
@@ -54,6 +56,13 @@ export function PlaysList() {
           {plays.length} plays feature the {guide.name.toLowerCase()}.{' '}
           <a href={href('positions', guide.id)}>Read the {guide.name.toLowerCase()} guide →</a>
         </p>
+      ) : null}
+
+      {!guide && TEAM_PLAYS.length ? (
+        <section aria-labelledby="cat-team">
+          <h2 id="cat-team">Our team’s plays</h2>
+          <TeamPlayCards plays={TEAM_PLAYS} />
+        </section>
       ) : null}
 
       {CATEGORY_ORDER.map((cat) => {

@@ -39,6 +39,7 @@ npm run preview           # serve dist/ to try the offline app locally
 - `src/features/`: the pages (home, positions, plays, formations, pitch explorer, glossary, quiz, tactics board)
 - `src/features/board/model.ts`: the tactics board's data, edits, templates and export/import format (no React, fully tested)
 - `src/lib/progress.ts`, `src/lib/boardStore.ts`: quiz progress and board plays, saved in the browser on this device only
+- `team-plays/`: tactics board exports shared with everyone as **Team plays** (see below)
 - `src/lib/pwa.ts`, `src/features/install/`: the offline app (install page, "new version" bar, offline notice)
 - `public/`: the app icon (`favicon.svg`) and the PNG sizes made from it
 - `.github/workflows/deploy.yml`: tests, builds and publishes to GitHub Pages on every push to `master`
@@ -82,6 +83,16 @@ Plays are saved in the browser (`localStorage`) on that device only. **Export** 
 **Import** reads one back. Importing never overwrites: a play that's already there
 unchanged is skipped, and a changed one is added alongside. Anything odd in a file
 (missing positions, unknown players, long text) is repaired or dropped when it's read.
+
+### Team plays
+
+Exported board files in `team-plays/` are built into the app (`src/features/board/teamPlays.ts`
+reads them with `import.meta.glob`) and shown as **Team plays** on the Board, Plays and
+home pages, at `#/plays/team/<title-slug>`. Add one by uploading an export to that
+folder on GitHub; `team-plays/README.md` has the steps for non-developers.
+`tests/teamPlays.test.ts` reads every file, so a broken upload fails the deploy with
+the file's name instead of reaching the live site. The same play exported twice is
+shown once.
 
 ## Offline app and publishing
 
