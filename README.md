@@ -74,3 +74,10 @@ Plays are saved in the browser (`localStorage`) on that device only. **Export** 
 **Import** reads one back. Importing never overwrites: a play that's already there
 unchanged is skipped, and a changed one is added alongside. Anything odd in a file
 (missing positions, unknown players, long text) is repaired or dropped when it's read.
+
+## License
+
+MIT: see [LICENSE](LICENSE). That covers the code and the hockey content (positions,
+plays, glossary, quiz). The rules summaries are written in our own words with links to
+their sources; the FIH Rules of Hockey and the other sources in `docs/SOURCES.md` belong
+to their owners.
