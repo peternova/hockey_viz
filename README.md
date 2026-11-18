@@ -4,6 +4,10 @@ Learn 11-a-side field hockey visually: positions, tactics and terminology as
 animations you can pause, slow down and step through. Labels use Australian/NZ
 wording.
 
+**Use it:** https://peternova.github.io/hockey_viz/ (open it on your phone and add it
+to the home screen to use it at the pitch with no signal; the app's "Put it on your
+phone" page has the steps).
+
 ## Run it
 
 ```bash
@@ -17,6 +21,7 @@ npm run dev          # then open the printed http://localhost:5173 link
 npm test                  # engine + content checks
 npm run validate:content  # just the content checks
 npm run build             # type-check + production build into dist/
+npm run preview           # serve dist/ to try the offline app locally
 ```
 
 ## Where things live
@@ -34,6 +39,9 @@ npm run build             # type-check + production build into dist/
 - `src/features/`: the pages (home, positions, plays, formations, pitch explorer, glossary, quiz, tactics board)
 - `src/features/board/model.ts`: the tactics board's data, edits, templates and export/import format (no React, fully tested)
 - `src/lib/progress.ts`, `src/lib/boardStore.ts`: quiz progress and board plays, saved in the browser on this device only
+- `src/lib/pwa.ts`, `src/features/install/`: the offline app (install page, "new version" bar, offline notice)
+- `public/`: the app icon (`favicon.svg`) and the PNG sizes made from it
+- `.github/workflows/deploy.yml`: tests, builds and publishes to GitHub Pages on every push to `master`
 
 ### Adding a play
 
@@ -74,6 +82,30 @@ Plays are saved in the browser (`localStorage`) on that device only. **Export** 
 **Import** reads one back. Importing never overwrites: a play that's already there
 unchanged is skipped, and a changed one is added alongside. Anything odd in a file
 (missing positions, unknown players, long text) is repaired or dropped when it's read.
+
+## Offline app and publishing
+
+The app is a PWA (`vite-plugin-pwa`, settings in `vite.config.ts`). On the first visit a
+service worker saves every file the app needs (about 540 KB), so after that every page
+works with no signal, and "Add to Home Screen" gives it an icon and a full screen.
+Nothing is fetched at run time apart from links to the sources.
+
+New versions don't take over by themselves: the service worker downloads them in the
+background and the app shows a "new version is ready" bar, so nobody loses a half-drawn
+play to a surprise reload. The app looks for updates every hour and whenever it comes
+back to the front.
+
+Every push to `master` runs `.github/workflows/deploy.yml`: `npm ci`, the tests, the
+build, then GitHub Pages. The build uses relative paths (`base: './'`), so the same
+`dist/` works at `/hockey_viz/`, under `npm run preview`, or from any folder. The
+install page shows the build date and commit, to check which version a phone has.
+
+Service workers need https (or `localhost`). Opening the dev server from a phone over
+the local network works, but not offline.
+
+To change the icon, edit `public/favicon.svg` and re-export `public/icons/icon-192.png`,
+`icon-512.png` (full-bleed, artwork inside the middle 80% so it also works as a
+maskable icon) and `apple-touch-icon.png` (180 px).
 
 ## License
 

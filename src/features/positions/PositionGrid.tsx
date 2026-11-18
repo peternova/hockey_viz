@@ -43,7 +43,8 @@ export function PositionGrid({ current, compact }: { current?: string; compact?:
           className={gk.id === current ? 'posgrid__cell posgrid__cell--on' : 'posgrid__cell'}
           aria-current={gk.id === current ? 'page' : undefined}
         >
-          <span className="posgrid__name">{gk.name}</span>
+          {/* A soft hyphen, so "Goal-keeper" can break on the narrowest phones. */}
+          <span className="posgrid__name">{gk.name.replace('keeper', '\u00ADkeeper')}</span>
         </a>
         <span />
       </div>

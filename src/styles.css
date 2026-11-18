@@ -255,15 +255,6 @@ main {
   font-size: 0.95rem;
 }
 
-.coming {
-  padding-left: 1.2em;
-  color: var(--text-muted);
-}
-
-.coming strong {
-  color: var(--text);
-}
-
 .meta ul {
   padding-left: 1.2em;
 }
@@ -796,10 +787,17 @@ main {
 @media (max-width: 480px) {
   .posgrid__head,
   .posgrid__row {
-    grid-template-columns: 58px repeat(3, minmax(0, 1fr));
+    grid-template-columns: 22px repeat(3, minmax(0, 1fr));
   }
+  /* Row labels turn sideways so the three position columns get the width. */
   .posgrid__rowlabel {
+    justify-content: center;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
     font-size: 0.68rem;
+  }
+  .posgrid__name {
+    hyphens: auto;
   }
   .posgrid__cell {
     font-size: 0.88rem;
@@ -2067,4 +2065,117 @@ button.chip.chip--on {
   .board__ball-halo {
     animation: none;
   }
+}
+
+/* ---- Offline app (M6) ---- */
+
+.pwa-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent);
+  background: var(--note-bg);
+}
+
+.pwa-bar--ok {
+  background: var(--good-bg);
+}
+
+.pwa-bar--offline {
+  border-color: var(--border);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.pwa-bar__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.card--install {
+  margin-top: 28px;
+}
+
+.install__checks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.install__check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.install__icon {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-weight: 700;
+  background: var(--surface-2);
+}
+
+.install__check--ok .install__icon {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.install__check--no .install__icon {
+  background: var(--close-bg);
+  color: var(--close-text);
+}
+
+.install__check .btn {
+  margin-top: 6px;
+}
+
+.install__address {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  overflow-wrap: anywhere;
+}
+
+.install__steps {
+  margin: 8px 0;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.install__steps summary {
+  padding: 10px 0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.install__steps[open] summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.install__steps ol,
+.install__steps ul {
+  padding-left: 1.3em;
+}
+
+.install__steps li + li {
+  margin-top: 6px;
 }

@@ -5,6 +5,8 @@ import { BoardHome } from './features/board/BoardHome';
 import { FormationsPage } from './features/formations/FormationsPage';
 import { GlossaryPage } from './features/glossary/GlossaryPage';
 import { Home } from './features/home/Home';
+import { InstallPage } from './features/install/InstallPage';
+import { PwaStatus } from './features/install/PwaStatus';
 import { PitchExplorer } from './features/pitch/PitchExplorer';
 import { PlayPage } from './features/plays/PlayPage';
 import { PlaysList } from './features/plays/PlaysList';
@@ -66,6 +68,7 @@ function Route({ parts }: { parts: string[] }) {
       );
   }
   if (section === 'board') return id ? <BoardEditorPage key={id} id={id} /> : <BoardHome />;
+  if (section === 'install') return <InstallPage />;
   return <NotFound />;
 }
 
@@ -106,6 +109,7 @@ export function App() {
         </nav>
       </header>
       <main>
+        <PwaStatus />
         <Route parts={parts} />
       </main>
     </>

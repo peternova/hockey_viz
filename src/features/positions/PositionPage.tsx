@@ -125,7 +125,7 @@ export function PositionPage({ guide }: { guide: PositionGuide }) {
             ))}
           </ul>
         ) : (
-          <p className="muted">More plays featuring this position are coming in the next milestone.</p>
+          <p className="muted">No plays in the library feature this position yet.</p>
         )}
       </section>
 

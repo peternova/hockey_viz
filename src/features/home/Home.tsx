@@ -1,5 +1,6 @@
 import { PLAYS, playById } from '../../content/plays';
 import { GLOSSARY } from '../../content/glossary';
+import { isStandalone } from '../../lib/pwa';
 import { href } from '../../lib/router';
 import { PositionGrid } from '../positions/PositionGrid';
 
@@ -27,8 +28,6 @@ const EXPLORE = [
     text: `${GLOSSARY.length} terms in Australian/NZ wording, with the US, UK and older names.`,
   },
 ];
-
-const COMING = [{ name: 'Install on your phone', what: 'Use it at the pitch, even with no signal' }];
 
 export function Home() {
   const startPlays = START_HERE.map((id) => playById(id)).filter((p) => p !== undefined);
@@ -81,14 +80,14 @@ export function Home() {
         ))}
       </ul>
 
-      <h2>Coming next</h2>
-      <ul className="coming">
-        {COMING.map((c) => (
-          <li key={c.name}>
-            <strong>{c.name}</strong> — {c.what}
-          </li>
-        ))}
-      </ul>
+      {isStandalone() ? null : (
+        <a className="card card--wide card--install" href={href('install')}>
+          <span className="card__title">Put it on your phone</span>
+          <span className="card__text">
+            Add Hockey IQ to your home screen and use it at the pitch, even with no signal.
+          </span>
+        </a>
+      )}
 
       <aside className="note">
         <strong>How to read the animations:</strong> round amber tokens are <em>us</em> and we always attack →
